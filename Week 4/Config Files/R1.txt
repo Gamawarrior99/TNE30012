@@ -1,0 +1,59 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R1
+
+line con 0
+logging synchronous
+exec-timeout 0 0
+exit
+
+no ip domain-lookup
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+int se0/1/0
+clock rate 64000
+ip address 10.1.1.1 255.255.255.252
+no shutdown
+exit
+
+ip route 0.0.0.0 0.0.0.0 10.1.1.2
+
+security passwords min-length 10
+ip domain-name ccnasecurity.com
+crypto key generate rsa general-keys modulus 1024
+username admin01 algorithm-type scrypt secret cisco12345
+
+line console 0
+login local
+exec-timeout 5 0
+logging synchronous
+
+line aux 0
+login local
+exec-timeout 5 0
+
+line vty 0 4
+login local
+transport input ssh
+exec-timeout 5 0
+
+enable algorithm-type scrypt secret class12345

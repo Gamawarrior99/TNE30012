@@ -1,0 +1,15 @@
+aaa new-model
+aaa authentication login default local-case none
+
+aaa authentication login TELNET_LINES local
+line vty 0 4
+login authentication TELNET_LINES
+exit
+exit
+
+clock set 14:15:00 26 December 2014
+show run | include timestamps
+conf t
+service timestamps debug datetime msec
+exit
+debug aaa authentication

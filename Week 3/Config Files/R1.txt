@@ -1,0 +1,68 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R1
+
+no ip domain-lookup
+
+int range g0/0-2
+shutdown
+exit
+a
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+int se0/1/0
+ip address 10.1.1.1 255.255.255.252
+no shutdown
+
+ip route 0.0.0.0 0.0.0.0 se0/1/0
+
+security passwords min-length 10
+enable algorithm-type scrypt secret cisco12345
+
+line console 0
+password ciscoconpass
+exec-timeout 5 0
+login local
+logging synchronous
+exit
+
+line aux 0
+password ciscoauxpass
+exec-timeout 5 0
+login local
+exit
+
+line vty 0 4
+password ciscovtypass
+exec-timeout 5 0
+transport input telnet
+login local
+exit
+
+service password-encryption
+
+username user01 algorithm-type scrypt secret user01pass
+
+username Admin01 privilege 15 algorithm-type scrypt secret Admin01pass
+
+aaa new-model
+aaa authentication login default group radius none
+
+radius server CCNAS
+address ipv4 192.168.1.3
+key WinRadius
+end

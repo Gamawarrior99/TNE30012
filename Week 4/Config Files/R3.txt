@@ -1,0 +1,141 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R3
+
+line con 0
+logging synchronous
+exec-timeout 0 0
+exit
+
+no ip domain-lookup
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/0
+ip address 192.168.33.1 255.255.255.0
+no shutdown
+exit
+
+int g0/1
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+exit
+
+int se0/1/1
+ip address 10.2.2.1 255.255.255.252
+no shutdown
+exit
+
+ip route 0.0.0.0 0.0.0.0 10.1.1.2
+ip route 0.0.0.0 0.0.0.0 10.2.2.2
+
+security passwords min-length 10
+ip domain-name ccnasecurity.com
+crypto key generate rsa general-keys modulus 1024
+username admin01 algorithm-type scrypt secret cisco12345
+
+line console 0
+login local
+exec-timeout 5 0
+logging synchronous
+
+line aux 0
+login local
+exec-timeout 5 0
+
+line vty 0 4
+login local
+transport input ssh
+exec-timeout 5 0
+
+enable algorithm-type scrypt secret class12345
+
+zone security INSIDE
+exit
+
+zone security CONFROOM
+exit
+
+zone security INTERNET
+exit
+
+
+class-map type inspect match-any INSIDE_PROTOCOLS
+match protocol tcp
+match protocol udp
+match protocol icmp
+exit
+
+class-map type inspect match-any CONFROOM_PROTOCOLS 
+match protocol http
+match protocol https
+match protocol dns
+exit
+
+policy-map type inspect INSIDE_TO_INTERNET
+class type inspect INSIDE_PROTOCOLS
+inspect
+exit
+
+policy-map type inspect CONFROOM_TO_INTERNET
+class type inspect CONFROOM_PROTOCOLS
+inspect
+exit
+
+zone-pair security INSIDE_TO_INTERNET source INSIDE destination INTERNET
+zone-pair security CONFROOM_TO_INTERNET source CONFROOM destination INTERNET
+
+do show zone-pair security
+
+zone-pair security INSIDE_TO_INTERNET source INSIDE destination INTERNET
+service-policy type inspect INSIDE_TO_INTERNET
+exit
+
+zone-pair security CONFROOM_TO_INTERNET source CONFROOM destination INTERNET
+service-policy type inspect CONFROOM_TO_INTERNET
+exit
+
+interface g0/0
+zone-member security CONFROOM
+exit
+
+interface g0/1
+zone-member security INSIDE
+exit
+
+interface s0/1/1
+zone-member security INTERNET
+exit
+
+do show zone security
+
+policy-map type inspect internet_to_self
+class class-default
+drop
+exit
+
+zone-pair security INTERNET_to_Self source INTERNET destination self
+service-policy type inspect internet_to_self
+exit
+
+policy-map type inspect inside
+class class-default
+pass
+exit
+
+zone-pair security INSIDE source INSIDE destination INSIDE
+service-policy type inspect inside
+exit
