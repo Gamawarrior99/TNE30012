@@ -1,0 +1,87 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R1
+
+line con 0
+logging synchronous
+exec-timeout 0 0
+exit
+
+no ip domain-lookup
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int se0/1/0
+ip address 10.1.1.1 255.255.255.252
+clock rate 64000
+no shutdown
+exit
+
+int g0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+ip route 0.0.0.0 0.0.0.0 10.1.1.2
+
+security passwords min-length 10
+ip domain-name ccnasecurity.com
+crypto key generate rsa general-keys modulus 1024
+username admin01 algorithm-type scrypt secret cisco12345
+
+line console 0
+login local
+exec-timeout 5 0
+logging synchronous
+
+enable algorithm-type scrypt secret class12345
+
+write memory
+exit
+
+mkdir ipsdir
+conf t
+ip ips config location flash:ipsdir
+ip ips name iosips
+ip ips notify log
+do clock set 10:20:00 10 january 2014
+service timestamps log datetime msec
+logging host 192.168.1.50
+
+ip ips signature-category
+category all 
+retired true
+exit
+category ios_ips basic
+retired false
+exit
+exit 
+
+interface g0/1
+ip ips iosips out
+
+ip ips signature-definition
+signature 2004 0
+status
+retired false
+enabled true
+exit
+engine
+event-action produce-alert
+event-action deny-packet-inline
+exit
+exit 
+exit 

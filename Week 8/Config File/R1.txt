@@ -1,0 +1,85 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R1
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+int se0/1/0
+ip address 10.1.1.1 255.255.255.252
+clock rate 64000
+no shutdown
+exit
+
+no ip domain lookup
+
+router ospf 101
+network 192.168.1.0 0.0.0.255 area 0
+network 10.1.1.0 0.0.0.3 area 0
+
+security passwords min-length 10
+enable algorithm-type scrypt secret cisco12345
+username admin01 algorithm-type scrypt secret admin01pass
+
+line console 0
+login local
+exec-timeout 5 0
+logging synchronous
+exit
+
+ip domain-name ccnasecurity.com
+crypto key generate rsa general-keys modulus 1024
+
+line vty 0 4
+login local
+transport input ssh
+exec-timeout 5 0
+exit
+
+do copy running-config startup-config
+
+crypto isakmp enable
+crypto isakmp policy 10
+hash sha
+authentication pre-share
+group 5
+lifetime 3600
+encryption aes 256
+exit
+
+crypto isakmp key cisco123 address 10.2.2.1
+crypto ipsec transform-set 50 esp-aes 256 esp-sha-hmac
+crypto ipsec security-association lifetime seconds 1800
+access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+
+crypto map CMAP 10 ipsec-isakmp
+match address 101
+set peer 10.2.2.1
+set pfs group5
+set transform-set 50
+set security-association lifetime seconds 900
+exit
+
+interface S0/1/0
+crypto map CMAP
+exit
+
+
+

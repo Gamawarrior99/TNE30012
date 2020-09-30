@@ -1,0 +1,128 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname S1
+
+line con 0
+logging synchronous
+exec-timeout 0 0
+exit
+
+no ip domain-lookup
+
+int range g1/0/1-24
+shutdown
+exit
+
+int range g1/1/1-4
+shutdown
+exit
+
+int vlan 1
+ip address 192.168.1.2 255.255.255.0
+no shutdown
+exit
+
+int range g1/0/5-6
+no shutdown
+exit
+
+int g1/0/1
+no shutdown
+exit
+
+enable algorithm-type scrypt secret cisco12345
+
+line console 0
+password ciscoconpass
+exec-timeout 5 0
+login
+logging synchronous
+
+do copy running-config startup-config
+
+ip domain-name ccnasecurity.com
+
+username admin privilege 15 algorithm-type scrypt secret cisco12345
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+ip ssh time-out 90 
+ip ssh authentication-retries 2
+
+line vty 0 4
+privilege level 15
+exec-timeout 5 0
+login local
+transport input ssh
+exit
+line vty 5 15
+transport input none
+do copy running-config startup-config
+
+spanning-tree vlan 1 priority 0
+exit
+
+do show spanning-tree
+interface G1/0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+do sh int trunk
+exit
+
+interface g1/0/1
+switchport trunk native vlan 99
+exit
+
+interface g1/0/1 
+switchport nonegotiate
+
+do sh int trunk switchport
+do show run | begin 0/1
+
+int range g1/0/5-6
+switchport mode access
+spanning-tree portfast
+spanning-tree bpduguard enable
+
+int g1/0/1
+spanning-tree guard root
+do show run | begin Gig
+
+interface g1/0/5
+shutdown
+switchport port-security
+switchport port-security mac-address 00e0.b0b3.5402
+no shutdown
+do show port-security interface g1/0/5
+
+vlan 20
+name Users
+
+interface g1/0/6
+switchport access vlan 20
+
+interface g1/0/5
+shutdown
+no switchport port-security
+no switchport port-security mac-address 00e0.b0b3.5402
+no shutdown
+
+int g1/0/5
+switchport mode trunk
+switchport trunk native vlan 99
+
+ip dhcp snooping
+ip dhcp snooping information option
+ip dhcp snooping vlan 1,20
+
+interface g1/0/6
+ip dhcp snooping limit rate 10
+exit
+
+interface g1/0/5
+description connects to DHCP server
+ip dhcp snooping trust 
+
+do show ip dhcp snooping 

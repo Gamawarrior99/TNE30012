@@ -1,0 +1,58 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R1
+
+line con 0
+logging synchronous
+exec-timeout 0 0
+exit
+
+no ip domain-lookup
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+do show interfaces g0/1
+
+ip dhcp pool CCNAS
+network 192.168.1.0 255.255.255.0
+default-router 192.168.1.1
+exit
+ip dhcp excluded-address 192.168.1.1 192.168.1.4
+
+ip dhcp pool 20Users
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+exit
+ip dhcp excluded-address 192.168.20.1
+
+interface g0/1
+shutdown
+no ip address 192.168.1.1 255.255.255.0
+no shutdown
+int G0/1.1
+encapsulation dot1q 1
+ip address 192.168.1.1 255.255.255.0
+int G0/1.20
+encapsulation dot1q 20
+ip address 192.168.20.1 255.255.255.0
+int G0/1.99
+encapsulation dot1q 99 native
+ip address 192.168.99.1 255.255.255.0

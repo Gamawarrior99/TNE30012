@@ -1,0 +1,264 @@
+Lab 8.4.1.3 Implementing VPNs
+
+Step 3 part c - Verify the IKE policy with the show crypto isakmp policy command
+R1#show crypto isakmp policy 
+Global IKE policy
+Protection suite of priority 10
+        encryption algorithm:    AES - Advanced Encryption Standard (256 bit keys).
+        hash algorithm:         Secure Hash Standard
+        authentication method:  Pre-Shared Key
+        Diffie-Hellman group:   #5 (1536 bit)
+        lifetime:               3600 seconds, no volume limit
+
+
+Step 4 Configure pre-shared keys
+Q. Which IP addresses should you use to configure the IKE peers, given the topology diagram and IP addressing table? Why?
+A.The IP addresses should be R1 S0/0/0 IP address 10.1.1.1 and R3 S0/0/1 IP address 10.2.2.1. 
+  These are the addresses that are used to send normal traffic between R1 and R3
+
+Step 5 Configure the IPsec transform set and lifetime.
+Q. What is the function of the IPsec transform set?
+A.IPsec is a function that hashes the data packets using the specified hashing algorithm
+
+Step 6 Define interesting traffic.
+Q. Does IPsec evaluate whether the access lists are mirrored as a requirement to negotiate its security association?
+A.Yes, ipsec evaluates whether access lists are mirroired. It is not a requirement when negociating security 
+
+Task 2 : verify Site-toSite VPN
+
+Enter show crypto ipsec transformation.
+ R1#show crypto ipsec transform-set 
+Transform set 50: {    { esp-256-aes esp-sha-hmac  }
+   will negotiate = { Tunnel,  },
+
+Transform set #$!default_transform_set_1: { esp-aes esp-sha-hmac  } 
+   will negotiate = { Transport,  }, 
+Transform set #$!default_transform_set_0: { esp-3des esp-sha-hmac  } 
+   will negotiate = { Transport,  },
+
+
+R3#sh crypto ipsec transform-set 
+Transform set 50: {    { esp-256-aes esp-sha-hmac  }
+   will negotiate = { Tunnel,  },
+
+Transform set #$!default_transform_set_1: { esp-aes esp-sha-hmac  } 
+   will negotiate = { Transport,  }, 
+Transform set #$!default_transform_set_0: { esp-3des esp-sha-hmac  } 
+   will negotiate = { Transport,  }, 
+
+Show crypto map
+R1#show crypto map
+
+
+R3#sh crypto map 
+
+
+
+Task 3: verify the IPsec VPN Operation
+
+Display ISAKMP security associations
+
+R1#sh crypto isakmp sa
+Crypto Map CMAP 10 ipsec-isakmp
+        Peer = 10.2.2.1
+        Extended IP access list 101
+            access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+        Current peer: 10.2.2.1
+        Security association lifetime: 4608000 kilobytes/900 seconds
+        PFS (Y/N): Y
+        Transform sets={
+                50,
+        }
+        Interfaces using crypto map CMAP:
+                Serial0/1/0
+
+R1# sh crypto ipsec sa
+Crypto Map CMAP 10 ipsec-isakmp
+        Peer = 10.1.1.1
+        Extended IP access list 101
+            access-list 101 permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
+        Current peer: 10.1.1.1
+        Security association lifetime: 4608000 kilobytes/900 seconds
+        PFS (Y/N): Y
+        Transform sets={
+                50,
+        }
+        Interfaces using crypto map CMAP:
+                Serial0/1/1
+
+
+Q. Why haven't any SAs been formed?
+A. SA have not been negoitated as no “interesting” traffic has been detected
+
+Step 3.
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.2.2.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 6/8/10 ms
+R1#sh crypto isakmp sa
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id slot status
+10.2.2.1        10.1.1.1        QM_IDLE           1034    0 ACTIVE
+IPv6 Crypto ISAKMP SA
+
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.3.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 6/8/10 ms
+R3#sh crypto isakmp sa
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id slot status
+10.1.1.1        10.2.2.1        QM_IDLE           1039    0 ACTIVE
+IPv6 Crypto ISAKMP SA
+
+Q was an SA created for thses pings?  Explain.
+A. NO as the ACL on R1 defines interesting traffic as traffic that inititates at 192.168.1.3 and its destination is 192.168.3.1
+  
+Issue the debug ip ospf events
+R1#debug ip ospf  events
+
+00:21:06: OSPF: Rcv hello from 10.2.2.2 area 0 from Serial0/1/0 10.1.1.2
+
+00:21:06: OSPF: End of hello processing
+
+00:21:16: OSPF: Rcv hello from 10.2.2.2 area 0 from Serial0/1/0 10.1.1.2
+
+00:21:16: OSPF: End of hello processing
+
+Reissue the show crypto isakmp sa command
+
+R1#sh crypto isakmp sa
+
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id slot status
+10.2.2.1        10.1.1.1        QM_IDLE           1034    0 ACTIVE
+
+
+IPv6 Crypto ISAKMP SA
+
+Q.Was an SA created between R1 and R3? Explain
+A.This is router to router protocol traffic where the source or destination is not intressting according to the acls we set
+
+Step 4: Generate some interesting traffic
+
+Extended ping fromR1 to R3 G0/1 interface address 192.168.3.1
+
+R1#ping
+R1#ping
+Protocol [ip]: 
+Target IP address: 192.168.3.1
+Repeat count [5]: 
+Datagram size [100]: 
+Timeout in seconds [2]: 
+Extended commands [n]: y
+Source address or interface: 192.168.1.1
+Type of service [0]: 
+Set DF bit in IP header? [no]: 
+Validate reply data? [no]: 
+Data pattern [0xABCD]: 
+Loose, Strict, Record, Timestamp, Verbose[none]: 
+Sweep range of sizes [n]: 
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.3.1, timeout is 2 seconds:
+Packet sent with a source address of 192.168.1.1
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 3/4/7 ms
+
+R1#
+
+Reissue the show crypto iskakmp sa command
+
+R1#sh crypto isakmp sa
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id slot status
+10.2.2.1        10.1.1.1        QM_IDLE           1034    0 ACTIVE
+IPv6 Crypto ISAKMP SA
+
+
+Q. Why was an SA created between R1 and R3 this time?
+A.The source was 192.168.1.1 and the destination was 192.168.3.1. This is interesting traffic based on the ACL we have defined
+
+Q. What are the endpoints of hte IPsec VPN tunnel?
+A.Src: 10.1.1.1 (R1 S0/0/0), Dst: 10.2.2.1 (R3 S0/0/1)
+
+Ping from PC-A to PC-C
+C:\>ping 192.168.3.3
+Pinging 192.168.3.3 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.3.3: bytes=32 time=5ms TTL=126
+Reply from 192.168.3.3: bytes=32 time=2ms TTL=126
+Reply from 192.168.3.3: bytes=32 time=2ms TTL=126
+
+Ping statistics for 192.168.3.3:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 5ms, Average = 3ms
+
+
+
+Q. How many packets have been tranformed between R1 and R3?
+A. 12
+
+do a show crypto ipsec sa
+
+R1#sh crypto ipsec sa
+nterface: Serial0/1/0
+    Crypto map tag: CMAP, local addr 10.1.1.1
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (192.168.1.0/255.255.255.0/0/0)
+   remote  ident (addr/mask/prot/port): (192.168.3.0/255.255.255.0/0/0)
+   current_peer 10.2.2.1 port 500
+    PERMIT, flags={origin_is_acl,}
+   #pkts encaps: 12, #pkts encrypt: 12, #pkts digest: 0
+   #pkts decaps: 11, #pkts decrypt: 11, #pkts verify: 0
+   #pkts compressed: 0, #pkts decompressed: 0
+   #pkts not compressed: 0, #pkts compr. failed: 0
+   #pkts not decompressed: 0, #pkts decompress failed: 0
+   #send errors 1, #recv errors 0
+
+     local crypto endpt.: 10.1.1.1, remote crypto endpt.:10.2.2.1
+     path mtu 1500, ip mtu 1500, ip mtu idb Serial0/1/0
+     current outbound spi: 0x6A95521E(1788170782)
+
+     inbound esp sas:
+      spi: 0xD5C89A9B(3586693787)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2002, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/756)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x6A95521E(1788170782)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2003, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/756)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+
+Q. The previous example used pings to generate interesting traffic.  What other types of traffic wolud result
+in an SA forming and tunnel establishment?
+A. Any traffic initiated from R1 with a source address in the 192.168.1.0/24 network and a destination address in the 192.168.3.0/24 network. 
+On R3, interesting traffic is any traffic with a source address in the 192.168.3.0/24 network and a destination address in the 192.168.1.0/24 network 
+
+REFLECTION
+
+Q. Would traffic on the Gigabit Ethernet link between PC-A and the R1 F0/0 interface be encrypted by the 
+site-to-site IPsec VPN tunnel? Explain.
+A. No. This site-to-site VPN only encrypts from router R1 to R3. A sniffer could be used to see the traffic from PC-A to the R1 default gateway

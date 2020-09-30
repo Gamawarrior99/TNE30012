@@ -1,0 +1,29 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R2
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+ip address 10.1.1.2 255.255.255.252
+no shutdown
+exit
+
+int se0/1/1
+ip address 10.2.2.2 255.255.255.252
+clock rate 64000
+no shutdown
+exit
+
+no ip domain lookup
+
+router ospf 101
+network 10.1.1.0 0.0.0.3 area 0
+network 10.2.2.0 0.0.0.3 area 0
+
+do copy running-config startup-config

@@ -1,0 +1,211 @@
+ ******************************************************************************************************
+
+R1#sh ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3
+
+******************************************************************************************************
+
+S1#sh users
+    Line       User       Host(s)              Idle       Location
+   0 con 0                idle                 00:02:09 
+*  3 vty 0     admin      idle                 00:00:00 
+
+  Interface    User               Mode         Idle     Peer Address
+******************************************************************************************************
+
+S1#sh spanning-tree
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    1
+             Address     0001.97E8.3EE7
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    1  (priority 0 sys-id-ext 1)
+             Address     0001.97E8.3EE7
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Gi1/0/1          Desg FWD 4         128.1    P2p
+Gi1/0/5          Desg FWD 4         128.5    P2p
+Gi1/0/6          Desg FWD 19        128.6    P2p
+
+******************************************************************************************************
+
+S1#sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Gig1/0/1    on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gig1/0/1    1-1005
+
+Port        Vlans allowed and active in management domain
+Gig1/0/1    1
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Gig1/0/1    1
+
+******************************************************************************************************
+
+S1#sh int g1/0/1 switchport
+Name: Gig1/0/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: Off
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 99 (Inactive)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: All
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Appliance trust: none
+
+******************************************************************************************************
+
+S1#sh run | begin 0/1
+interface GigabitEthernet1/0/1
+ switchport trunk native vlan 99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+!
+
+******************************************************************************************************
+
+S1#sh run | begin Gig
+interface GigabitEthernet1/0/1
+ switchport trunk native vlan 99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ spanning-tree guard root
+
+******************************************************************************************************
+
+R1#sh int g0/1
+GigabitEthernet0/1 is up, line protocol is up (connected)
+  Hardware is CN Gigabit Ethernet, address is 00e0.b0b3.5402 (bia 00e0.b0b3.5402)
+  Internet address is 192.168.1.1/24
+  MTU 1500 bytes, BW 1000000 Kbit, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Full-duplex, 100Mb/s, media type is RJ45
+  output flow-control is unsupported, input flow-control is unsupported
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last input 00:00:08, output 00:00:05, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue :0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+     8 packets input, 1024 bytes, 0 no buffer
+     Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     0 watchdog, 1017 multicast, 0 pause input
+     0 input packets with dribble condition detected
+     8 packets output, 1024 bytes, 0 underruns
+     0 output errors, 0 collisions, 2 interface resets
+     0 unknown protocol drops
+     0 babbles, 0 late collision, 0 deferred
+     0 lost carrier, 0 no carrier
+     0 output buffer failures, 0 output buffers swapped out
+
+******************************************************************************************************
+
+S1#sh port-security 
+Secure Port MaxSecureAddr CurrentAddr SecurityViolation Security Action
+               (Count)       (Count)        (Count)
+--------------------------------------------------------------------
+     Gig1/0/5        1          1                 1         Shutdown
+----------------------------------------------------------------------
+
+******************************************************************************************************
+
+S1#sh port-security int g1/0/5
+Port Security              : Enabled
+Port Status                : Secure-shutdown
+Violation Mode             : Shutdown
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 1
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 1
+
+******************************************************************************************************
+
+S1#sh int g1/0/6 switchport
+Name: Gig1/0/6
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Administrative Trunking Encapsulation: negotiated
+Operational Trunking Encapsulation: native
+Negotiation of Trunking: Off
+Access Mode VLAN: 20 (Users)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: All
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Appliance trust: none
+
+******************************************************************************************************
+
+S1#sh ip dhcp snooping 
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+1,20
+DHCP snooping is operational on following VLANs:
+1
+Smartlog is configured on following VLANs:
+none
+Smartlog is operational on following VLANs:
+none
+DHCP snooping is configured on the following L3 Interfaces:
+
+Insertion of option 82 is enabled
+   circuit-id default format: vlan-mod-port
+   remote-id: 0001.97E8.3EE7 (MAC)
+Option 82 on untrusted port is not allowed
+Verification of hwaddr field is enabled
+Verification of giaddr field is enabled
+DHCP snooping trust/rate is configured on the following Interfaces:
+
+Interface                  Trusted    Allow option    Rate limit (pps)
+-----------------------    -------    ------------    ----------------
+GigabitEthernet1/0/5       yes        yes             unlimited       
+  Custom circuit-ids:
+GigabitEthernet1/0/6       no         no              10              
+  Custom circuit-ids:
+
+******************************************************************************************************
