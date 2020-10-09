@@ -1,0 +1,32 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R3
+
+int range g0/0-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 172.16.3.1 255.255.255.0
+no shutdown
+exit
+
+int s0/1/1
+ip address 10.2.2.1 255.255.255.252
+no shutdown
+exit
+
+ip route 0.0.0.0 0.0.0.0 10.2.2.2
+
+do copy run start
