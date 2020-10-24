@@ -463,7 +463,7 @@ R2 Running Config
 R2#sh run
 Building configuration...
 
-Current configuration : 1378 bytes
+Current configuration : 1337 bytes
 !
 version 15.3
 no service timestamps log datetime msec
@@ -475,6 +475,8 @@ hostname R2
 !
 boot system flash c2900-universalk9-mz.SPA.155-3.M4a.bin 
 !
+enable secret 5 $1$mERr$166lGoPJRwPznaeDR/4cZ0
+!
 !
 !
 !
@@ -484,8 +486,6 @@ ip cef
 no ipv6 cef
 !
 !
-!
-username admin01 secret 9 $9$J19FIAftPZf7c3$UCoDDjPJKpGzU0t1I4mEDH1tDqn5ZO4ebCaZgdXXgyY
 !
 !
 license udi pid CISCO2911/K9 sn FTX1524QX0Y-
@@ -943,11 +943,9 @@ line con 0
  login
  exec-timeout 5 0
 !
-line vty 0 4
+line vty 0 15
  exec-timeout 5 0
  password 7 0822455D0A1613030B1B0D517F
- login
-line vty 5 15
  login
 !
 !
