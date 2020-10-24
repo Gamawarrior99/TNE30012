@@ -1,0 +1,44 @@
+ena
+conf t
+
+hostname CCNAS-ASA
+
+interface G1/2
+nameif in
+security-level 100
+ip address 192.168.10.1 255.255.255.0
+exit
+
+interface G1/1
+nameif out
+security-level 0
+no ip address dhcp
+ip address 209.165.200.234 255.255.255.248
+exit
+
+domain-name ccnasecurity.com
+enable password ciscoenapa55
+username admin password adminpa55
+
+aaa authentication ssh console LOCAL
+ssh 192.168.10.0 255.255.255.0 in
+ssh 172.30.3.3 255.255.255.255 out
+ssh timeout 10
+
+dhcpd address 192.168.10.5-192.168.10.30 in
+dhcpd enable in
+
+route out 0.0.0.0 0.0.0.0 209.165.200.233
+
+object network inside-net
+subnet 192.168.10.0 255.255.255.0
+nat (in,out) dynamic interface
+
+class-map inspection_default
+match default-inspection-traffic
+exit
+policy-map global_policy
+class inspection_default
+inspect icmp
+exit
+service-policy global_policy global

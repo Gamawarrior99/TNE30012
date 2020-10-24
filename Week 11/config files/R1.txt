@@ -26,10 +26,7 @@ logging synchronous
 exit
 
 line vty 0 4
-password ciscovtypa55
-login
 transport input ssh
-exec-timeout 5 0
 exit
 
 ip domain-name ccnasecurity.com
@@ -46,7 +43,7 @@ aaa authentication login default local enable
 
 do copy run start
 
-access-list 101 permit ip 172.20.1.1 0.0.0.255 172.30.3.1 0.0.0.255
+access-list 101 permit ip 172.20.1.0 0.0.0.255 172.30.3.0 0.0.0.255
 
 crypto isakmp enable
 crypto isakmp policy 10
@@ -57,11 +54,14 @@ group 5
 lifetime 3600
 crypto isakmp key ciscovpnpa55 address 10.20.20.1
 
-crypto ipsec transform-set 50 esp-aes 256 esp-sha-hmac
+crypto ipsec transform-set VPN-SET esp-aes 256 esp-sha-hmac
 
 crypto map CMAP 10 ipsec-isakmp
 match address 101
 set peer 10.20.20.1
 set pfs group5
-set transform-set 50
+set transform-set VPN-SET
+exit
+int s0/1/0
+crypto map CMAP
 exit

@@ -1,0 +1,1182 @@
+____________________________________________________________________________________
+From PC-C ping 172.20.1.1
+C:\>ping 172.20.1.1
+
+Pinging 172.20.1.1 with 32 bytes of data:
+
+Request timed out.
+Reply from 172.20.1.1: bytes=32 time=2ms TTL=254
+Reply from 172.20.1.1: bytes=32 time=2ms TTL=254
+Reply from 172.20.1.1: bytes=32 time=2ms TTL=254
+
+Ping statistics for 172.20.1.1:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+
+____________________________________________________________________________________
+On R3 do a show crypto ipsec sa
+
+R3#show crypto ipsec sa
+
+interface: Serial0/1/1
+    Crypto map tag: CMAP, local addr 10.20.20.1
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (172.30.3.0/255.255.255.0/0/0)
+   remote  ident (addr/mask/prot/port): (172.20.1.0/255.255.255.0/0/0)
+   current_peer 10.10.10.1 port 500
+    PERMIT, flags={origin_is_acl,}
+   #pkts encaps: 3, #pkts encrypt: 3, #pkts digest: 0
+   #pkts decaps: 3, #pkts decrypt: 3, #pkts verify: 0
+   #pkts compressed: 0, #pkts decompressed: 0
+   #pkts not compressed: 0, #pkts compr. failed: 0
+   #pkts not decompressed: 0, #pkts decompress failed: 0
+   #send errors 1, #recv errors 0
+
+     local crypto endpt.: 10.20.20.1, remote crypto endpt.:10.10.10.1
+     path mtu 1500, ip mtu 1500, ip mtu idb Serial0/1/1
+     current outbound spi: 0xF0079998(4027029912)
+
+     inbound esp sas:
+      spi: 0xFACD5D06(4207762694)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2002, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/3263)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xF0079998(4027029912)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2003, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/3263)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+___________________________________________________________________________________
+From PC-C ssh into ASA 209.165.200.234
+C:\>ssh -l admin 209.165.200.234
+
+Password: 
+
+
+
+CCNAS-ASA>
+___________________________________________________________________________________
+From R1 do an extended ping 172.30.3.3 from 172.20.1.1
+
+R1#ping
+Protocol [ip]: 
+Target IP address: 172.30.2.2
+Repeat count [5]: 
+Datagram size [100]: 
+Timeout in seconds [2]: 
+Extended commands [n]: y
+Source address or interface: 172.20.1.1
+Type of service [0]: 
+Set DF bit in IP header? [no]: 
+Validate reply data? [no]: 
+Data pattern [0xABCD]: 
+Loose, Strict, Record, Timestamp, Verbose[none]: 
+Sweep range of sizes [n]: 
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.30.2.2, timeout is 2 seconds:
+Packet sent with a source address of 172.20.1.1
+U.U.U
+Success rate is 0 percent (0/5)
+____________________________________________________________________________________
+From R1 do an extended ping 172.30.3.1 from 172.20.1.1
+
+R1#ping
+Protocol [ip]: 
+Target IP address: 172.30.3.1
+Repeat count [5]: 
+Datagram size [100]: 
+Timeout in seconds [2]: 
+Extended commands [n]: y
+Source address or interface: 172.20.1.1
+Type of service [0]: 
+Set DF bit in IP header? [no]: 
+Validate reply data? [no]: 
+Data pattern [0xABCD]: 
+Loose, Strict, Record, Timestamp, Verbose[none]: 
+Sweep range of sizes [n]: 
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.30.3.1, timeout is 2 seconds:
+Packet sent with a source address of 172.20.1.1
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/6/15 ms
+___________________________________________________________________________________
+On R1 do a show crypto ipsec sa
+
+R1(config)#do show crypto ipsec sa
+
+interface: Serial0/1/0
+    Crypto map tag: CMAP, local addr 10.10.10.1
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (172.20.1.0/255.255.255.0/0/0)
+   remote  ident (addr/mask/prot/port): (172.30.3.0/255.255.255.0/0/0)
+   current_peer 10.20.20.1 port 500
+    PERMIT, flags={origin_is_acl,}
+   #pkts encaps: 11, #pkts encrypt: 11, #pkts digest: 0
+   #pkts decaps: 11, #pkts decrypt: 11, #pkts verify: 0
+   #pkts compressed: 0, #pkts decompressed: 0
+   #pkts not compressed: 0, #pkts compr. failed: 0
+   #pkts not decompressed: 0, #pkts decompress failed: 0
+   #send errors 0, #recv errors 0
+
+     local crypto endpt.: 10.10.10.1, remote crypto endpt.:10.20.20.1
+     path mtu 1500, ip mtu 1500, ip mtu idb Serial0/1/0
+     current outbound spi: 0xFACD5D06(4207762694)
+
+     inbound esp sas:
+      spi: 0xF0079998(4027029912)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2002, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/2534)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xFACD5D06(4207762694)
+        transform: esp-aes 256 esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2003, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/2534)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     outbound ah sas:
+
+     outbound pcp sas:
+___________________________________________________________________________________
+On PC-A change to DHCP. What is the IP address?
+
+IPv4: 192.168.10.5
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.1
+___________________________________________________________________________________
+On PC-B change to DHCP. What is the IP address?
+
+IPv4: 192.168.10.6
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.1
+___________________________________________________________________________________
+From PC-A ping 172.20.1.1
+
+C:\>ping 172.20.1.1
+
+Pinging 172.20.1.1 with 32 bytes of data:
+
+Request timed out.
+Reply from 172.20.1.1: bytes=32 time<1ms TTL=254
+Reply from 172.20.1.1: bytes=32 time<1ms TTL=254
+Reply from 172.20.1.1: bytes=32 time<1ms TTL=254
+
+Ping statistics for 172.20.1.1:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+___________________________________________________________________________________
+From PC-A ping 172.30.3.1
+
+C:\>ping 172.30.3.1
+
+Pinging 172.30.3.1 with 32 bytes of data:
+
+Request timed out.
+Reply from 172.30.3.1: bytes=32 time=2ms TTL=252
+Reply from 172.30.3.1: bytes=32 time=2ms TTL=252
+Reply from 172.30.3.1: bytes=32 time=2ms TTL=252
+
+Ping statistics for 172.30.3.1:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+
+C:\>
+___________________________________________________________________________________
+From PC-A ping 172.30.3.3
+
+C:\>ping 172.30.3.3
+
+Pinging 172.30.3.3 with 32 bytes of data:
+
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 172.30.3.3:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>
+___________________________________________________________________________________
+On R3 do a show ip ips all
+R3#show ip ips all
+IPS Signature File Configuration Status
+    Configured Config Locations: -none-
+    Last signature default load time: 
+    Last signature delta load time: 
+    Last event action (SEAP) load time: -none-
+
+    General SEAP Config:
+    Global Deny Timeout: 3600 seconds
+    Global Overrides Status: Enabled
+    Global Filters Status: Enabled
+
+IPS Auto Update is not currently configured
+
+IPS Syslog and SDEE Notification Status
+    Event notification through syslog is enabled
+    Event notification through SDEE is enabled
+
+IPS Signature Status
+    Total Active Signatures: 1
+    Total Inactive Signatures: 0
+
+IPS Packet Scanning and Interface Status
+    IPS Rule Configuration
+      IPS name IPS-RULE
+    IPS fail closed is disabled
+    IPS deny-action ips-interface is false
+    Fastpath ips is enabled
+    Quick run mode is enabled
+    Interface Configuration
+      Interface Serial0/1/1
+        Inbound IPS rule is IPS-RULE
+       Outgoing IPS rule is not set
+
+IPS Category CLI Configuration:
+    Category all
+	Retire: True
+    Category ios_ips basic
+	Retire: False
+R3#
+___________________________________________________________________________________
+On R3 do a show zone-pair security
+
+R3#show zone-pair security 
+Zone-pair name IN-2-OUT-ZPAIR
+    Source-Zone IN-ZONE  Destination-Zone OUT-ZONE 
+    service-policy IN-2-OUT-PMAP
+
+R3#
+____________________________________________________________________________________
+On R3 do a show policy-map type inspect zone-pair sessions
+R3#show policy-map type inspect zone-pair sessions
+
+policy exists on zp IN-2-OUT-ZPAIR
+ Zone-pair: IN-2-OUT-ZPAIR
+
+  Service-policy inspect : IN-2-OUT-PMAP
+
+    Class-map: INTERNAL-CLASS-MAP (match-all)
+      Match: access-group 110
+      Inspect
+
+    Class-map: class-default (match-any)
+      Match: any
+      Drop (default action)
+        0 packets, 0 bytes
+R3#
+__________________________________________________________________________________
+R1 Running Config
+
+R1#sh run
+Building configuration...
+
+Current configuration : 2180 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+security passwords min-length 10
+!
+hostname R1
+!
+login block-for 60 attempts 2 within 30
+login on-failure log
+!
+boot system flash c2900-universalk9-mz.SPA.155-3.M4a.bin 
+!
+enable secret 5 $1$mERr$166lGoPJRwPznaeDR/4cZ0
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default local enable 
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+username Admin01 privilege 15 secret 5 $1$mERr$Jj7To5G9RItlZ3jcQt1WO1
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524SKH8-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+crypto isakmp policy 10
+ encr aes 256
+ authentication pre-share
+ group 5
+ lifetime 3600
+!
+crypto isakmp key ciscovpnpa55 address 10.20.20.1
+!
+!
+!
+crypto ipsec transform-set VPN-SET esp-aes 256 esp-sha-hmac
+!
+crypto map CMAP 10 ipsec-isakmp 
+ set peer 10.20.20.1
+ set pfs group5
+ set transform-set VPN-SET 
+ match address 101
+!
+!
+!
+!
+ip ssh version 2
+no ip domain-lookup
+ip domain-name ccnasecurity.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 172.20.1.1 255.255.255.0
+!
+interface GigabitEthernet0/0
+ ip address 209.165.200.233 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 10.10.10.1 255.255.255.252
+ clock rate 128000
+ crypto map CMAP
+!
+interface Serial0/1/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 Serial0/1/0 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended sl_def_acl
+ deny tcp any any eq telnet
+ deny tcp any any eq www
+ deny tcp any any eq 22
+ permit tcp any any eq 22
+access-list 101 permit ip 172.20.1.0 0.0.0.255 172.30.3.0 0.0.0.255
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 15 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ transport input ssh
+!
+!
+!
+end
+
+
+R1#
+___________________________________________________________________________________
+R2 Running Config
+
+R2#sh run
+Building configuration...
+
+Current configuration : 1378 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R2
+!
+!
+boot system flash c2900-universalk9-mz.SPA.155-3.M4a.bin 
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+username admin01 secret 9 $9$J19FIAftPZf7c3$UCoDDjPJKpGzU0t1I4mEDH1tDqn5ZO4ebCaZgdXXgyY
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524QX0Y-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 10.10.10.2 255.255.255.252
+!
+interface Serial0/1/1
+ ip address 10.20.20.2 255.255.255.252
+ clock rate 128000
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 172.20.1.0 255.255.255.0 Serial0/1/0 
+ip route 192.168.10.0 255.255.255.0 Serial0/1/0 
+ip route 172.30.3.0 255.255.255.0 Serial0/1/1 
+ip route 209.165.200.232 255.255.255.248 Serial0/1/0 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 15 0
+ password ciscovtypa55
+ login
+ transport input ssh
+!
+!
+!
+end
+
+
+R2#
+___________________________________________________________________________________
+R3 Running Config
+
+R3#sh run
+Building configuration...
+
+Current configuration : 2078 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R3
+!
+!
+boot system flash c2900-universalk9-mz.SPA.155-3.M4a.bin 
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524UZ46-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+crypto isakmp policy 10
+ encr aes 256
+ authentication pre-share
+ group 5
+ lifetime 3600
+!
+crypto isakmp key ciscovpnpa55 address 10.10.10.1
+!
+!
+!
+crypto ipsec transform-set VPN-SET esp-aes 256 esp-sha-hmac
+!
+crypto map CMAP 10 ipsec-isakmp 
+ set peer 10.10.10.1
+ set pfs group5
+ set transform-set VPN-SET 
+ match address 101
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+ip ips name IPS-RULE
+ip ips signature-category
+  category all
+   retired true
+  category ios_ips basic
+   retired false
+class-map type inspect match-all INTERNAL-CLASS-MAP
+ match access-group 110
+!
+policy-map type inspect IN-2-OUT-PMAP
+ class type inspect INTERNAL-CLASS-MAP
+  inspect
+!
+!
+!
+zone security IN-ZONE
+zone security OUT-ZONE
+zone-pair security IN-2-OUT-ZPAIR source IN-ZONE destination OUT-ZONE
+ service-policy type inspect IN-2-OUT-PMAP
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ ip address 172.30.3.1 255.255.255.0
+ zone-member security IN-ZONE
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/1/1
+ ip address 10.20.20.1 255.255.255.252
+ ip ips IPS-RULE in
+ zone-member security OUT-ZONE
+ crypto map CMAP
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 Serial0/1/1 
+!
+ip flow-export version 9
+!
+!
+access-list 101 permit ip 172.30.3.0 0.0.0.255 172.20.1.0 0.0.0.255
+access-list 110 permit ip 172.30.3.0 0.0.0.255 any
+access-list 110 deny ip any any
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+
+R3# 
+___________________________________________________________________________________
+ASA Running Config
+
+CCNAS-ASA#sh run
+: Saved
+:
+ASA Version 9.6(1)
+!
+hostname CCNAS-ASA
+domain-name ccnasecurity.com
+enable password n0KLRIeUdCEjU8lj encrypted
+names
+!
+interface GigabitEthernet1/1
+ nameif out
+ security-level 0
+ ip address 209.165.200.234 255.255.255.248
+!
+interface GigabitEthernet1/2
+ nameif in
+ security-level 100
+ ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet1/3
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/4
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/5
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/6
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/7
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/8
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface Management1/1
+ management-only
+ no nameif
+ no security-level
+ no ip address
+!
+object network inside-net
+ subnet 192.168.10.0 255.255.255.0
+!
+route out 0.0.0.0 0.0.0.0 209.165.200.233 1
+!
+!
+!
+object network inside-net
+ nat (in,out) dynamic interface
+!
+aaa authentication ssh console LOCAL
+!
+!
+username admin password .vMR4ts6hGyvBErZ encrypted
+!
+class-map inspection_default
+ match default-inspection-traffic
+!
+policy-map global_policy
+ class inspection_default
+  inspect icmp 
+!
+service-policy global_policy global
+!
+telnet timeout 5
+ssh 172.30.3.3 255.255.255.255 i
+ssh 172.30.3.3 255.255.255.255 in
+ssh 172.30.3.3 255.255.255.255 out
+ssh 192.168.10.0 255.255.255.0 in
+ssh timeout 10
+!
+dhcpd address 192.168.10.5-192.168.10.30 in
+dhcpd enable in
+!
+!
+!
+!
+!
+CCNAS-ASA# 
+___________________________________________________________________________________
+S1 Running Config
+
+S1#sh run
+Building configuration...
+
+Current configuration : 1920 bytes
+!
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname S1
+!
+enable secret 5 $1$mERr$166lGoPJRwPznaeDR/4cZ0
+!
+!
+!
+no ip domain-lookup
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+ switchport trunk native vlan 99
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface FastEthernet0/2
+ shutdown
+!
+interface FastEthernet0/3
+ shutdown
+!
+interface FastEthernet0/4
+ shutdown
+!
+interface FastEthernet0/5
+ shutdown
+!
+interface FastEthernet0/6
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky 
+ switchport port-security mac-address sticky 00D0.BC36.C95D
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface FastEthernet0/7
+ shutdown
+!
+interface FastEthernet0/8
+ shutdown
+!
+interface FastEthernet0/9
+ shutdown
+!
+interface FastEthernet0/10
+ shutdown
+!
+interface FastEthernet0/11
+ shutdown
+!
+interface FastEthernet0/12
+ shutdown
+!
+interface FastEthernet0/13
+ shutdown
+!
+interface FastEthernet0/14
+ shutdown
+!
+interface FastEthernet0/15
+ shutdown
+!
+interface FastEthernet0/16
+ shutdown
+!
+interface FastEthernet0/17
+ shutdown
+!
+interface FastEthernet0/18
+ shutdown
+!
+interface FastEthernet0/19
+ shutdown
+!
+interface FastEthernet0/20
+ shutdown
+!
+interface FastEthernet0/21
+ shutdown
+!
+interface FastEthernet0/22
+ shutdown
+!
+interface FastEthernet0/23
+ shutdown
+!
+interface FastEthernet0/24
+ shutdown
+!
+interface GigabitEthernet0/1
+ shutdown
+!
+interface GigabitEthernet0/2
+ shutdown
+!
+interface Vlan1
+ ip address 192.168.10.11 255.255.255.0
+!
+ip default-gateway 192.168.10.1
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+line con 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+ login
+ exec-timeout 5 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ login
+line vty 5 15
+ login
+!
+!
+!
+!
+end
+
+
+S1# 
+___________________________________________________________________________________
+S2 Running Config
+
+S2#sh run
+Building configuration...
+
+Current configuration : 1490 bytes
+!
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname S2
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+ switchport trunk native vlan 99
+ switchport mode trunk
+ switchport nonegotiate
+!
+interface FastEthernet0/2
+ shutdown
+!
+interface FastEthernet0/3
+ shutdown
+!
+interface FastEthernet0/4
+ shutdown
+!
+interface FastEthernet0/5
+ shutdown
+!
+interface FastEthernet0/6
+ shutdown
+!
+interface FastEthernet0/7
+ shutdown
+!
+interface FastEthernet0/8
+ shutdown
+!
+interface FastEthernet0/9
+ shutdown
+!
+interface FastEthernet0/10
+ shutdown
+!
+interface FastEthernet0/11
+ shutdown
+!
+interface FastEthernet0/12
+ shutdown
+!
+interface FastEthernet0/13
+ shutdown
+!
+interface FastEthernet0/14
+ shutdown
+!
+interface FastEthernet0/15
+ shutdown
+!
+interface FastEthernet0/16
+ shutdown
+!
+interface FastEthernet0/17
+ shutdown
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+ shutdown
+!
+interface FastEthernet0/20
+ shutdown
+!
+interface FastEthernet0/21
+ shutdown
+!
+interface FastEthernet0/22
+ shutdown
+!
+interface FastEthernet0/23
+ shutdown
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+ shutdown
+!
+interface GigabitEthernet0/2
+ shutdown
+!
+interface Vlan1
+ ip address 192.168.10.12 255.255.255.0
+!
+ip default-gateway 192.168.10.1
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+line con 0
+!
+line vty 0 4
+ login
+line vty 5 15
+ login
+!
+!
+!
+!
+end
+
+
+S2#
+__________________________________________________________________________________
+S3 Running Config
+
+S3#sh run
+Building configuration...
+
+Current configuration : 1141 bytes
+!
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname S3
+!
+!
+!
+no ip domain-lookup
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ ip address 172.30.3.11 255.255.255.0
+!
+ip default-gateway 172.30.3.1
+!
+!
+!
+!
+line con 0
+!
+line vty 0 4
+ login
+line vty 5 15
+ login
+!
+!
+!
+!
+end
+
+
+S3#
+___________________________________________________________________________________

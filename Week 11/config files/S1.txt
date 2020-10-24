@@ -19,7 +19,7 @@ exec-timeout 5 0
 logging synchronous
 exit
 
-line vty 0 4
+line vty 0 15
 password ciscovtypa55
 login 
 exec-timeout 5 0
@@ -29,6 +29,7 @@ interface fa0/1
 switchport mode trunk
 switchport trunk native vlan 99
 switchport nonegotiate
+no shutdown
 exit
 
 int fa0/6
@@ -37,4 +38,5 @@ switchport port-security
 switchport port-security mac-address sticky
 spanning-tree portfast
 spanning-tree bpduguard enable
+no shutdown
 exit

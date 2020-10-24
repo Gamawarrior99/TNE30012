@@ -9,7 +9,7 @@ int range g0/0-2
 shutdown
 exit
 
-enable algorithm-type scrypt secret ciscoenapa55
+enable secret ciscoenapa55
 
 line vty 0 4
 password ciscovtypa55

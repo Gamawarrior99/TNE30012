@@ -19,7 +19,7 @@ exit
 
 do copy run start
 
-access-list 101 permit ip 172.30.3.1 0.0.0.255 172.20.1.1 0.0.0.255
+access-list 101 permit ip 172.30.3.0 0.0.0.255 172.20.1.0 0.0.0.255
 
 crypto isakmp enable
 crypto isakmp policy 10
@@ -29,12 +29,64 @@ authentication pre-share
 group 5
 lifetime 3600
 crypto isakmp key ciscovpnpa55 address 10.10.10.1
-
-crypto ipsec transform-set 50 esp-aes 256 esp-sha-hmac
+crypto ipsec transform-set VPN-SET esp-aes 256 esp-sha-hmac
 
 crypto map CMAP 10 ipsec-isakmp
 match address 101
 set peer 10.10.10.1
 set pfs group5
-set transform-set 50
+set transform-set VPN-SET
+exit
+
+int s0/1/1
+crypto map CMAP
+exit
+
+zone security IN-ZONE
+exit
+zone security OUT-ZONE
+exit
+
+ip access-list extended 110
+permit ip 172.30.3.0 0.0.0.255 any
+deny ip any any
+exit
+
+class-map type inspect match-all INTERNAL-CLASS-MAP
+match access-group 110
+exit
+
+policy-map type inspect IN-2-OUT-PMAP
+class type inspect INTERNAL-CLASS-MAP
+inspect
+exit
+exit
+
+zone-pair security IN-2-OUT-ZPAIR source IN-ZONE destination OUT-ZONE
+service-policy type inspect IN-2-OUT-PMAP
+exit
+
+interface g0/1
+zone-member security IN-ZONE
+exit
+
+interface s0/1/1
+zone-member security OUT-ZONE
+exit
+
+do mkdir ipsdir
+ip ips config location flash:ipsdir
+ip ips name IPS-RULE
+
+ip ips signature-category
+category all
+retired true
+exit 
+
+category ios_ips basic
+retired false
+exit
+
+interface s0/1/1
+ip ips IPS-RULE in
 exit
