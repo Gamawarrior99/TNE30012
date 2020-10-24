@@ -1,0 +1,21 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname S2
+
+int range fa0/1-23, gi0/1-2
+shutdown
+exit
+
+interface fa0/1
+switchport mode trunk
+switchport trunk native vlan 99
+switchport nonegotiate
+no shutdown
+exit
+
+int fa0/18
+no shutdown
+exit

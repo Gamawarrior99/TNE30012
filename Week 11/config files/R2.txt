@@ -1,0 +1,19 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R2
+
+int range g0/0-2
+shutdown
+exit
+
+enable algorithm-type scrypt secret ciscoenapa55
+
+line vty 0 4
+password ciscovtypa55
+login 
+transport input ssh
+exec-timeout 15 0
+exit
