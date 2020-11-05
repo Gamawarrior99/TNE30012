@@ -1,0 +1,74 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited and prosecuted to the full extent of the law!$
+
+hostname R1
+
+int range g0/1-2
+shutdown
+exit
+
+int se0/1/1
+shutdown
+exit
+
+int g0/1
+ip address 172.16.1.1 255.255.255.0
+no shutdown
+exit
+
+int s0/1/0
+ip address 10.10.10.1 255.255.255.252
+clock rate 128000
+no shutdown
+exit
+
+no ip domain lookup
+
+ip route 0.0.0.0 0.0.0.0 se0/1/0
+
+do copy run start
+
+service password-encryption
+security passwords min-length 10
+
+enable algorithm-type scrypt secret ciscoenapa55
+
+line console 0
+password ciscoconpa55
+exec-timeout 0 0
+logging synchronous
+exit
+
+username Admin01 privilege 15 secret Admin01pa55
+aaa new-model
+aaa authentication login default local enable
+
+login block-for 60 attempts 2 within 30
+login on-failure log
+
+access-list 101 permit ip 172.16.1.0 0.0.0.255 172.16.3.0 0.0.0.255
+
+crypto isakmp enable
+crypto isakmp policy 50
+encryption aes 256
+hash sha
+authentication pre-share
+group 5
+lifetime 86400
+crypto isakmp key ciscokey address 10.20.20.1
+
+crypto ipsec transform-set IPSEC-SET esp-aes 256
+
+crypto map CMAP 50 ipsec-isakmp
+match address 101
+set peer 10.20.20.1
+set pfs group5
+set transform-set IPSEC-SET
+set security-association lifetime seconds 3600
+exit
+
+int s0/1/0
+crypto map CMAP
+exit
