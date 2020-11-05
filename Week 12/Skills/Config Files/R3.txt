@@ -1,0 +1,100 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited and prosecuted to the full extent of the law!$
+
+hostname R3
+
+int range g0/1-2
+shutdown
+exit
+
+int se0/1/0
+shutdown
+exit
+
+int g0/1
+ip address 172.16.3.1 255.255.255.0
+no shutdown
+exit
+
+int s0/1/1
+ip address 10.20.20.1 255.255.255.252
+no shutdown
+exit
+
+no ip domain lookup
+
+ip route 0.0.0.0 0.0.0.0 se0/1/1
+
+do copy run start
+
+service password-encryption
+security passwords min-length 10
+enable algorithm-type scrypt secret ciscoenapa55
+
+line console 0
+password ciscoconpa55
+exec-timeout 0 0
+logging synchronous
+exit
+
+username Admin01 privilege 15 secret Admin01pa55
+aaa new-model
+aaa authentication login default local enable
+
+zone security TRUSTED
+exit
+zone security UNTRUSTED
+exit
+
+class-map type inspect match-any INSIDE_PROTOCOLS
+match protocol ftp
+match protocol tftp
+match protocol icmp
+match protocol tcp
+match protocol udp
+exit
+
+policy-map type inspect INSIDE_TO_INTERNET
+class type inspect INSIDE_PROTOCOLS
+inspect
+exit
+exit
+
+zone-pair security IN_TO_OUT_ZONE source TRUSTED destination UNTRUSTED
+service-policy type inspect INSIDE_TO_INTERNET
+exit
+
+interface g0/1
+zone-member security TRUSTED
+exit
+
+interface s0/1/1
+zone-member security UNTRUSTED
+exit
+
+access-list 101 permit ip 172.16.3.0 0.0.0.255 172.16.1.0 0.0.0.255
+
+crypto isakmp enable
+crypto isakmp policy 50
+encryption aes 256
+hash sha
+authentication pre-share
+group 5
+lifetime 86400
+crypto isakmp key ciscokey address 10.10.10.1
+
+crypto ipsec transform-set IPSEC-SET esp-aes 256
+
+crypto map CMAP 50 ipsec-isakmp
+match address 101
+set peer 10.10.10.1
+set pfs group5
+set transform-set IPSEC-SET
+set security-association lifetime seconds 3600
+exit
+
+int s0/1/1
+crypto map CMAP
+exit

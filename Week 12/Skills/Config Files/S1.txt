@@ -1,0 +1,54 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited and prosecuted to the full extent of the law!$
+
+hostname Sw1
+
+int range g1/0/2-23
+shutdown
+exit
+
+int range g1/1/1-4
+shutdown
+exit
+
+int vlan 1
+ip address 172.16.1.11 255.255.255.0
+no shutdown
+exit
+
+ip default-gateway 172.16.1.1
+
+no ip domain lookup
+
+do copy run start
+
+service password-encryption
+
+line console 0
+password ciscoconpa55
+exec-timeout 0 0
+logging synchronous
+exit
+
+line vty 0 15
+password ciscovtypa55
+exec-timeout 5 0
+exit
+
+int g1/0/1
+switchport mode access
+spanning-tree portfast
+spanning-tree bpduguard enabled
+exit
+
+int g1/0/24
+switchport mode access
+spanning-tree portfast
+spanning-tree bpduguard enable
+switchport port-security
+switchport port-security maximum 2
+switchport port-security violation shutdown
+switchport port-security mac-address sticky 
+

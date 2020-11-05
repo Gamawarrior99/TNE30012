@@ -1,0 +1,39 @@
+ena
+conf t
+
+banner motd $Unauthorized access strictly prohibited!$
+
+hostname R2
+
+int range g0/1-2
+shutdown
+exit
+
+int se0/1/0
+ip address 10.10.10.2 255.255.255.252
+no shutdown
+exit
+
+int s0/1/1
+ip address 10.20.20.2 255.255.255.252
+clock rate 128000
+no shutdown
+exit
+
+no ip domain lookup
+
+ip route 172.16.1.0 255.255.255.0 10.10.10.1
+ip route 172.16.3.0 255.255.255.0 10.20.20.1
+
+do copy run start
+
+username SSHUser privilege 15 secret cisco12345
+
+ip domain-name ccnasecurity.com
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+
+line vty 0 4
+transport input ssh
+login local
+exit

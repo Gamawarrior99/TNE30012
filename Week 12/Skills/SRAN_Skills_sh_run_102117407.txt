@@ -1,0 +1,882 @@
+Sw1
+
+Sw1(config-if)#do sh run
+Building configuration...
+
+Current configuration : 2386 bytes
+!
+version 16.3.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Sw1
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet1/0/1
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/2
+ shutdown
+!
+interface GigabitEthernet1/0/3
+ shutdown
+!
+interface GigabitEthernet1/0/4
+ shutdown
+!
+interface GigabitEthernet1/0/5
+ shutdown
+!
+interface GigabitEthernet1/0/6
+ shutdown
+!
+interface GigabitEthernet1/0/7
+ shutdown
+!
+interface GigabitEthernet1/0/8
+ shutdown
+!
+interface GigabitEthernet1/0/9
+ shutdown
+!
+interface GigabitEthernet1/0/10
+ shutdown
+!
+interface GigabitEthernet1/0/11
+ shutdown
+!
+interface GigabitEthernet1/0/12
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ shutdown
+!
+interface GigabitEthernet1/0/14
+ shutdown
+!
+interface GigabitEthernet1/0/15
+ shutdown
+!
+interface GigabitEthernet1/0/16
+ shutdown
+!
+interface GigabitEthernet1/0/17
+ shutdown
+!
+interface GigabitEthernet1/0/18
+ shutdown
+!
+interface GigabitEthernet1/0/19
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ shutdown
+!
+interface GigabitEthernet1/0/21
+ shutdown
+!
+interface GigabitEthernet1/0/22
+ shutdown
+!
+interface GigabitEthernet1/0/23
+ shutdown
+!
+interface GigabitEthernet1/0/24
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/1/1
+ shutdown
+!
+interface GigabitEthernet1/1/2
+ shutdown
+!
+interface GigabitEthernet1/1/3
+ shutdown
+!
+interface GigabitEthernet1/1/4
+ shutdown
+!
+interface Vlan1
+ ip address 172.16.1.11 255.255.255.0
+!
+ip default-gateway 172.16.1.1
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+no cdp run
+!
+banner motd ^CUnauthorized access strictly prohibited and prosecuted to the full extent of the law!^C
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ login
+line vty 5 15
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ login
+!
+!
+!
+!
+end
+
+____________________________________________________________________________________________________________________________________
+sw3
+
+Sw3(config-if)#do sh run
+Building configuration...
+
+Current configuration : 2242 bytes
+!
+version 16.3.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Sw3
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet1/0/1
+ switchport mode access
+ switchport nonegotiate
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/2
+ shutdown
+!
+interface GigabitEthernet1/0/3
+ shutdown
+!
+interface GigabitEthernet1/0/4
+ shutdown
+!
+interface GigabitEthernet1/0/5
+ shutdown
+!
+interface GigabitEthernet1/0/6
+ shutdown
+!
+interface GigabitEthernet1/0/7
+ shutdown
+!
+interface GigabitEthernet1/0/8
+ shutdown
+!
+interface GigabitEthernet1/0/9
+ shutdown
+!
+interface GigabitEthernet1/0/10
+ shutdown
+!
+interface GigabitEthernet1/0/11
+ shutdown
+!
+interface GigabitEthernet1/0/12
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/14
+ shutdown
+!
+interface GigabitEthernet1/0/15
+ shutdown
+!
+interface GigabitEthernet1/0/16
+ shutdown
+!
+interface GigabitEthernet1/0/17
+ shutdown
+!
+interface GigabitEthernet1/0/18
+ shutdown
+!
+interface GigabitEthernet1/0/19
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ shutdown
+!
+interface GigabitEthernet1/0/21
+ shutdown
+!
+interface GigabitEthernet1/0/22
+ shutdown
+!
+interface GigabitEthernet1/0/23
+ shutdown
+!
+interface GigabitEthernet1/0/24
+ shutdown
+!
+interface GigabitEthernet1/1/1
+ shutdown
+!
+interface GigabitEthernet1/1/2
+ shutdown
+!
+interface GigabitEthernet1/1/3
+ shutdown
+!
+interface GigabitEthernet1/1/4
+ shutdown
+!
+interface Vlan1
+ ip address 172.16.3.11 255.255.255.0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+no cdp run
+!
+banner motd ^CUnauthorized access strictly prohibited and prosecuted to the full extent of the law!^C
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ login
+line vty 5 15
+ exec-timeout 5 0
+ password 7 0822455D0A1613030B1B0D517F
+ login
+!
+!
+!
+!
+end
+
+____________________________________________________________________________________________________________________________________
+R1
+
+R1(config)#do sh run
+Building configuration...
+
+Current configuration : 1983 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+security passwords min-length 10
+!
+hostname R1
+!
+login block-for 60 attempts 2 within 30
+login on-failure log
+!
+!
+enable secret 9 $9$J19FIAftPZf7c3$6CfwRdsD.OaPmiS8p8XyvZ9sbqQoPNAy5dMOnmdlO6U
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default local enable 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username Admin01 privilege 15 secret 5 $1$mERr$Jj7To5G9RItlZ3jcQt1WO1
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524SKH8-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+crypto isakmp policy 50
+ encr aes 256
+ authentication pre-share
+ group 5
+!
+crypto isakmp key ciscovpnpa55 address 10.20.20.1
+!
+!
+!
+crypto ipsec transform-set IPSEC-SET esp-aes 256
+!
+crypto map CMAP 50 ipsec-isakmp 
+ set peer 10.20.20.1
+ set pfs group5
+ set transform-set IPSEC-SET 
+ match address 101
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ ip address 172.16.1.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 10.10.10.1 255.255.255.252
+ clock rate 128000
+ crypto map CMAP
+!
+interface Serial0/1/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 Serial0/1/0 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended sl_def_acl
+ deny tcp any any eq telnet
+ deny tcp any any eq www
+ deny tcp any any eq 22
+ permit tcp any any eq 22
+access-list 101 permit ip 172.16.1.0 0.0.0.255 172.16.3.0 0.0.0.255
+!
+banner motd ^CUnauthorized access strictly prohibited and prosecuted to the full extent of the law!^C
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+!
+!
+!
+end
+
+
+R1(config)#no crypto isakmp key ciscovpnpa55 address 10.20.20.1
+R1(config)#crypto isakmp key ciscokey address 10.20.20.1
+R1(config)#do sh run
+Building configuration...
+
+Current configuration : 1979 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+security passwords min-length 10
+!
+hostname R1
+!
+login block-for 60 attempts 2 within 30
+login on-failure log
+!
+!
+enable secret 9 $9$J19FIAftPZf7c3$6CfwRdsD.OaPmiS8p8XyvZ9sbqQoPNAy5dMOnmdlO6U
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default local enable 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username Admin01 privilege 15 secret 5 $1$mERr$Jj7To5G9RItlZ3jcQt1WO1
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524SKH8-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+crypto isakmp policy 50
+ encr aes 256
+ authentication pre-share
+ group 5
+!
+crypto isakmp key ciscokey address 10.20.20.1
+!
+!
+!
+crypto ipsec transform-set IPSEC-SET esp-aes 256
+!
+crypto map CMAP 50 ipsec-isakmp 
+ set peer 10.20.20.1
+ set pfs group5
+ set transform-set IPSEC-SET 
+ match address 101
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ ip address 172.16.1.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 10.10.10.1 255.255.255.252
+ clock rate 128000
+ crypto map CMAP
+!
+interface Serial0/1/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 Serial0/1/0 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended sl_def_acl
+ deny tcp any any eq telnet
+ deny tcp any any eq www
+ deny tcp any any eq 22
+ permit tcp any any eq 22
+access-list 101 permit ip 172.16.1.0 0.0.0.255 172.16.3.0 0.0.0.255
+!
+banner motd ^CUnauthorized access strictly prohibited and prosecuted to the full extent of the law!^C
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 0822455D0A1606181C1B0D517F
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+!
+!
+!
+end
+
+____________________________________________________________________________________________________________________________________
+R2
+
+R2#sh run
+Building configuration...
+
+Current configuration : 1213 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R2
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username SSHUser privilege 15 secret 5 $1$mERr$WvpW0n5HghRrqnrwXCUUl.
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524QX0Y-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+no ip domain-lookup
+ip domain-name ccnasecurity.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 10.10.10.2 255.255.255.252
+!
+interface Serial0/1/1
+ ip address 10.20.20.2 255.255.255.252
+ clock rate 128000
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 172.16.3.0 255.255.255.0 10.20.20.1 
+ip route 172.16.1.0 255.255.255.0 10.10.10.1 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+!
+end
+
+___________________________________________________________________________________________________________________________________
+R3
+
+R3(config)#do sh run
+Building configuration...
+
+Current configuration : 1938 bytes
+!
+version 15.3
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+security passwords min-length 10
+!
+hostname R3
+!
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX1524UZ46-
+license boot module c2900 technology-package FoundationSuiteK9
+!
+!
+!
+crypto isakmp policy 50
+ encr aes 256
+ authentication pre-share
+ group 5
+!
+crypto isakmp key ciscokey address 10.10.10.1
+!
+!
+!
+crypto ipsec transform-set IPSEC-SET esp-aes 256
+!
+crypto map CMAP 50 ipsec-isakmp 
+ set peer 10.10.10.1
+ set pfs group5
+ set transform-set IPSEC-SET 
+ match address 101
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+class-map type inspect match-any INSIDE_PROTOCOLS
+ match protocol ftp
+ match protocol tftp
+ match protocol icmp
+ match protocol tcp
+ match protocol udp
+!
+policy-map type inspect INSIDE_TO_INTERNET
+ class type inspect INSIDE_PROTOCOLS
+  inspect
+!
+!
+!
+zone security TRUSTED
+zone security UNTRUSTED
+zone-pair security IN_TO_OUT_ZONE source TRUSTED destination UNTRUSTED
+ service-policy type inspect INSIDE_TO_INTERNET
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/1
+ ip address 172.16.3.1 255.255.255.0
+ zone-member security TRUSTED
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/1/1
+ ip address 10.20.20.1 255.255.255.252
+ zone-member security UNTRUSTED
+ crypto map CMAP
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 Serial0/1/1 
+ip route 172.16.1.0 255.255.255.0 10.10.10.1 
+!
+ip flow-export version 9
+!
+!
+access-list 101 permit ip 172.16.3.0 0.0.0.255 172.16.1.0 0.0.0.255
+!
+banner motd ^CUnauthorized access strictly prohibited!^C
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
+____________________________________________________________________________________________________________________________________

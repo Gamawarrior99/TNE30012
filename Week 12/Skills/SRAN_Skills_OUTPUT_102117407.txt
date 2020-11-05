@@ -1,0 +1,205 @@
+From PC-A, ping PC-C at IP address 172.16.3.3.
+
+C:\>ping 172.16.3.3
+
+Pinging 172.16.3.3 with 32 bytes of data:
+
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 172.16.3.3:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>
+
+____________________________________________________________________________________________________________________________________
+show policy-map type inspect zone-pair session
+
+R3(config)#do sh policy-map type inspect zone-pair session
+
+policy exists on zp IN_TO_OUT_ZONE
+ Zone-pair: IN_TO_OUT_ZONE
+
+  Service-policy inspect : INSIDE_TO_INTERNET
+
+    Class-map: INSIDE_PROTOCOLS (match-any)
+      Match: protocol ftp
+        0 packets, 0 bytes
+        30 second rate 0 bps
+      Match: protocol tftp
+        0 packets, 0 bytes
+        30 second rate 0 bps
+      Match: protocol icmp
+        4 packets, 512 bytes
+        30 second rate 0 bps
+      Match: protocol tcp
+        28 packets, 1137 bytes
+        30 second rate 0 bps
+      Match: protocol udp
+        0 packets, 0 bytes
+        30 second rate 0 bps
+      Inspect
+
+        Number of Established Sessions = 1
+        Established Sessions
+         Session 3372011888 (172.16.3.3:1025)=>(10.20.20.2:22) tcp SIS_OPEN/TCP_ESTAB
+          Created 00:03:42, Last heard  00:03:36
+          Bytes sent (initiator:responder) [1147:976]
+    Class-map: class-default (match-any)
+      Match: any
+      Drop (default action)
+        0 packets, 0 bytes
+___________________________________________________________________________________________________________________________________
+show crypto isakmp sa
+
+R1(config)#do sh crypto isakmp sa
+IPv4 Crypto ISAKMP SA
+dst             src             state          conn-id slot status
+10.20.20.1      10.10.10.1      QM_IDLE           1005    0 ACTIVE
+
+
+IPv6 Crypto ISAKMP SA
+____________________________________________________________________________________________________________________________________
+show crypto ipsec sa
+
+R1(config)#do show crypto ipsec sa
+
+interface: Serial0/1/0
+    Crypto map tag: CMAP, local addr 10.10.10.1
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (172.16.1.0/255.255.255.0/0/0)
+   remote  ident (addr/mask/prot/port): (172.16.3.0/255.255.255.0/0/0)
+   current_peer 10.20.20.1 port 500
+    PERMIT, flags={origin_is_acl,}
+   #pkts encaps: 2, #pkts encrypt: 2, #pkts digest: 0
+   #pkts decaps: 3, #pkts decrypt: 3, #pkts verify: 0
+   #pkts compressed: 0, #pkts decompressed: 0
+   #pkts not compressed: 0, #pkts compr. failed: 0
+   #pkts not decompressed: 0, #pkts decompress failed: 0
+   #send errors 0, #recv errors 0
+
+     local crypto endpt.: 10.10.10.1, remote crypto endpt.:10.20.20.1
+     path mtu 1500, ip mtu 1500, ip mtu idb Serial0/1/0
+     current outbound spi: 0x81165CE8(2165726440)
+
+     inbound esp sas:
+      spi: 0x8B5557A5(2337626021)
+        transform: esp-aes 256 ,
+        in use settings ={Tunnel, }
+        conn id: 2001, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/3369)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x81165CE8(2165726440)
+        transform: esp-aes 256 ,
+        in use settings ={Tunnel, }
+        conn id: 2002, flow_id: FPGA:1, crypto map: CMAP
+        sa timing: remaining key lifetime (k/sec): (4525504/3369)
+        IV size: 16 bytes
+        replay detection support: N
+        Status: ACTIVE
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+How many packets have been received from R3 and decrypted by R1? recieved 3 decrypted 3
+
+____________________________________________________________________________________________________________________________________
+Port security Sw1
+
+do show port-security
+Secure Port MaxSecureAddr CurrentAddr SecurityViolation Security Action
+               (Count)       (Count)        (Count)
+--------------------------------------------------------------------
+    Gig1/0/24        2          0                 0         Shutdown
+----------------------------------------------------------------------
+
+_____________________________________________________________________________________________________________________________
+Port security Sw1
+
+do show port-sec
+Secure Port MaxSecureAddr CurrentAddr SecurityViolation Security Action
+               (Count)       (Count)        (Count)
+--------------------------------------------------------------------
+    Gig1/0/13        2          0                 0         Shutdown
+----------------------------------------------------------------------
+
+_____________________________________________________________________________________________________________________________
+int brief sw1
+
+Sw1(config-if)#do sh ip int brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet1/0/1   unassigned      YES unset  up                    up 
+GigabitEthernet1/0/2   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/3   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/4   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/5   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/6   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/7   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/8   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/9   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/10  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/11  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/12  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/13  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/14  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/15  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/16  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/17  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/18  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/19  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/20  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/21  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/22  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/23  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/24  unassigned      YES unset  up                    up 
+GigabitEthernet1/1/1   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/2   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/3   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/4   unassigned      YES unset  administratively down down 
+Vlan1                  172.16.1.11     YES manual up                    up
+_______________________________________________________________________________________________________________________________
+show ip int brief sw3
+
+Sw3(config-if)#do sh ip int brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet1/0/1   unassigned      YES unset  up                    up 
+GigabitEthernet1/0/2   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/3   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/4   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/5   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/6   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/7   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/8   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/9   unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/10  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/11  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/12  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/13  unassigned      YES unset  up                    up 
+GigabitEthernet1/0/14  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/15  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/16  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/17  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/18  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/19  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/20  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/21  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/22  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/23  unassigned      YES unset  administratively down down 
+GigabitEthernet1/0/24  unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/1   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/2   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/3   unassigned      YES unset  administratively down down 
+GigabitEthernet1/1/4   unassigned      YES unset  administratively down down 
+Vlan1                  172.16.3.11     YES manual up                    up
